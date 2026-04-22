@@ -58,6 +58,35 @@ Pre-built buttons for common communication needs:
 - **Platform dropdown:** Select email, Slack, or announcement
 - **Tone dropdown:** Choose formal, friendly, or direct
 
+## System Architecture
+
+![IC-LLM-Twin System Architecture](IC-LLM-Twin%20System%20Architecture.png)
+
+### Architecture Components
+
+**Data Collection Pipeline**
+- Collects data from multiple sources: Emails, Slack Messages, and Company Documents
+- Processes through ETL pipeline into a NoSQL database
+
+**Feature Pipeline**
+- Cleans and formats collected data with embeddings for RAG finetuning
+- Maintains a Logical Feature Store containing:
+  - Instruct Dataset
+  - Vector Database
+  - Retrieval Client
+
+**Training Pipeline**
+- Experiment Tracking and LLM Finetuning (iterative process)
+- Tests LLM candidates
+- Produces LLM production candidates stored in Model Registry
+
+**Inference Pipeline**
+- Deploys the trained model
+- Runs LLM Twin engine with Prompt Monitoring
+- Generates professional messages
+- Exposes REST API for user interactions
+- Retrieves policy context through RAG for informed responses
+
 ## Why This System?
 
 The Internal Communication Twin empowers employees to write faster and more consistently by automating brand-aligned messaging while utilizing company data in a morally sound, secure way that respects user privacy.
