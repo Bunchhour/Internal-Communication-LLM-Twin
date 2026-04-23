@@ -90,3 +90,20 @@ Pre-built buttons for common communication needs:
 ## Why This System?
 
 The Internal Communication Twin empowers employees to write faster and more consistently by automating brand-aligned messaging while utilizing company data in a morally sound, secure way that respects user privacy.
+
+
+# Tooling architecture mapping
+- **MongoDB (NoSQL)**: MongoDB will act as foundational data lake. It will store the raw, unprocessed text and metadata extracted from our data sources. Specifially, this includes your raw internal **Emails**, **Slack messages**, and the raw text of **Company Documents** (like Privacy Policies and Codes of Conduct) before they undergo cleaning, formatting, or embedding.
+
+- **Qdrant (Vector DB)**: This will play role in feature pipeline, Qdrant will store the mathematical vectore embeddings of knowledge base. Specifically, this will be our *Company Documents* (Privacy Policies, Code of Conduct, and internal wiki documentation). Storing those data in Qdrant allows our *inference Pipeline* to use RAG to instantly fetch relevant company rules and context, ensuring the AI's generated messages are compiliant with company policies.
+
+- **ZenML**: Will act as the central orchestrator[Central orchestrator = the main system that executes and coordinates all your pipeline steps in one place] (the 'glue') for your entire MLOps lifecycle. We will use it to defin the automate the flow between your isolated architecture components: triggering the data extraction into MongoDB, kicking off the feature pipeline to generate Qrant embeddings, running the training jobs, and finally deploying the model to the inference pipeline. it ensures our steps are reproducible and trackable ffrom end to end. 
+
+- **Comet ML**: Comet ML
+When you are training the model on your Slack messages, what are you using this for?
+In your Training Pipeline, Comet ML acts as your Experiment Tracking and Model Registry platform. When fine-tuning your LLM to learn users' Slack tone, you will use Comet to track hyperparameters (like learning rate), log training/validation loss, compare different LLM candidate iterations side-by-side, and save the final "production candidate" models so you always know exactly which version of the model is deployed.
+
+- **Opik**: Once your Slack-drafting bot is live, what will this tool be monitoring?
+In your Inference Pipeline, Opik handles the Prompt Monitoring component. Once your bot is live, it will monitor the exact prompt inputs (the user's rough drafts) and the LLM's outputs (the polished messages). It will track metrics like response latency, user feedback (if they regenerate or accept the draft), tone consistency, and safety guardrails (ensuring the bot doesn't generate inappropriate content or violate the retrieved policy context).
+
+
